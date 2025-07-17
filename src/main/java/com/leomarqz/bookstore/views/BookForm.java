@@ -16,6 +16,13 @@ public class BookForm extends JFrame
     private BookService bookService;
     private JPanel panel;
     private JTable table;
+    private JTextField textTitle;
+    private JTextField textAuthor;
+    private JTextField textPrice;
+    private JTextField textStock;
+    private JButton btnSave;
+    private JButton btnModify;
+    private JButton btnDelete;
     private DefaultTableModel tableModel;
 
     @Autowired
@@ -23,6 +30,12 @@ public class BookForm extends JFrame
         this.bookService = bookService;
 
         start();
+
+        btnSave.addActionListener((event)->{
+            //TODO
+            System.out.println("Button Save clicked");
+        });
+
     }
 
     private void start(){
