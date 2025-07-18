@@ -1,5 +1,6 @@
 package com.leomarqz.bookstore.views;
 
+import com.leomarqz.bookstore.models.Book;
 import com.leomarqz.bookstore.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,6 +35,7 @@ public class BookForm extends JFrame
         btnSave.addActionListener((event)->{
             //TODO
             System.out.println("Button Save clicked");
+            addNewBook();
         });
 
     }
@@ -83,5 +85,84 @@ public class BookForm extends JFrame
             tableModel.addRow(row);
         });
         table.setModel(tableModel);
+    }
+
+    private void addNewBook(){
+        String title = textTitle.getText();
+        String author = textAuthor.getText();
+        String priceText = textPrice.getText();
+        String stockText = textStock.getText();
+
+        var result = validator();
+
+        if(!result) return;
+
+        var book = new Book();
+
+        book.setTitle( title );
+        book.setAuthor( author );
+
+        try{
+            book.setPrice( Double.parseDouble(priceText) );
+        }catch (Exception e){
+            textPrice.requestFocusInWindow();
+            JOptionPane.showMessageDialog(this, "Invalid price format.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try {
+            book.setStock(Integer.parseInt(stockText));
+        }catch (Exception e) {
+            textStock.requestFocusInWindow();
+            JOptionPane.showMessageDialog(this, "Invalid stock format.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        try{
+            bookService.createBook(book);
+
+            JOptionPane.showMessageDialog(this, "Book saved successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+
+            clearFields();
+
+            loadBooks();
+
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(this, "Error saving book: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+    }
+
+    private boolean validator(){
+        if(this.textTitle.getText().isEmpty()){
+            this.textTitle.requestFocusInWindow();
+            JOptionPane.showMessageDialog(this, "Title is required.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if(this.textAuthor.getText().isEmpty()){
+            this.textAuthor.requestFocusInWindow();
+            JOptionPane.showMessageDialog(this, "Author is required.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if(this.textPrice.getText().isEmpty()){
+            this.textPrice.requestFocusInWindow();
+            JOptionPane.showMessageDialog(this, "Price is required.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if(this.textStock.getText().isEmpty()){
+            this.textStock.requestFocusInWindow();
+            JOptionPane.showMessageDialog(this, "Stock is required.", "Error", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void clearFields() {
+        textTitle.setText("");
+        textAuthor.setText("");
+        textPrice.setText("");
+        textStock.setText("");
     }
 }
