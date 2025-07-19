@@ -113,12 +113,19 @@ public class BookForm extends JFrame
         this.textIdHidden = new JTextField();
         this.textIdHidden.setVisible(false); // Hide the ID field if not needed in the UI
 
-        this.tableModel = new DefaultTableModel(0, 5);
+        this.tableModel = new DefaultTableModel(0, 5){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                // Make the table cells non-editable
+                return false;
+            }
+        };
 
         String[] headers = {"Id", "Title", "Author", "Price", "Stock"};
 
         this.tableModel.setColumnIdentifiers(headers);
         this.table = new JTable(tableModel);
+        this.table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         // Ajustar ancho de columna "Id"
         table.getColumnModel().getColumn(0).setPreferredWidth(40);
